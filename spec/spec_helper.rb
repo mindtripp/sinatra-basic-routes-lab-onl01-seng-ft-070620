@@ -1,16 +1,17 @@
-require_relative 'config/environment'
+  
+ENV["SINATRA_ENV"] = "test"
+require_relative '../config/environment.rb'
+require 'capybara/dsl'
+require 'rack/test'
 
-class App < Sinatra::Base
-
-  get '/name' do 
-    "My name is Victoria"
-  end
-
-  get '/hometown' do 
-    "My hometown is Charlottesville"
-  end
-
-  get '/favorite-song' do
-    "My favorite song is Shake It Off"
-  end
+RSpec.configure do |config|
+  config.include Capybara::DSL
+  config.include Rack::Test::Methods
+  config.order = 'default'
 end
+
+def app
+  Rack::Builder.parse_file('config.ru').first
+end
+
+Capybara.app = app
